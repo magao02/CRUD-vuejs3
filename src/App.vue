@@ -1,12 +1,11 @@
 <template>
   <nav>
     <router-link to="/">Home</router-link> |
-    <router-link to="/cadastro">Cadastro</router-link> | 
-    <router-link to="/editar">Editar</router-link> 
+    <router-link v-if="!this.$store.state.logged" to="/cadastro">Cadastro</router-link>  
+    <router-link v-if="this.$store.state.logged" to="/editar">Editar</router-link> 
   </nav>
   <router-view/>
 </template>
-
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

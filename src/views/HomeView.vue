@@ -1,18 +1,42 @@
 <template>
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <h1 v-if="!this.$store.state.logged">Bem vindo visitante</h1>
+    <h1 v-else >Bem vindo {{this.$store.state.nome}}</h1>
+    <LoginForm v-if="!this.$store.state.logged"></LoginForm>
+    <button v-else class="logout" @click="logout">Sair</button>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
+import { getAuth,signOut} from "firebase/auth";
+import LoginForm from "@/components/LoginForm.vue";
 export default {
+  
   name: 'HomeView',
-  components: {
-    HelloWorld
+  components:{
+    LoginForm,
+  },
+  methods:{
+      logout(){
+          let auth;
+          auth = getAuth();
+          signOut(auth).then(()=>{
+            this.$store.commit("logout")
+          })
+      }
   }
+
 }
 </script>
+<style scoped>
+ .logout{
+     color: red;
+     height: 35px;
+        line-height: 35px;
+        box-sizing: border-box;
+        background-color: white;
+        border: 2px solid red
+
+ }
+</style>
