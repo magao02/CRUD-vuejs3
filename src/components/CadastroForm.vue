@@ -81,7 +81,6 @@
                 <input type="submit" id="enviar" name="enviar" value="enviar"/>
             </div>
         </form>
-        <button @click="cadastrar" ></button>
     </div>
 </template>
 
@@ -110,6 +109,7 @@
             }
         },
         mounted(){
+            console.log(process.env.VUE_APP_SERVER_URI)
             axios.get("https://servicodados.ibge.gov.br/api/v1/paises/").then((res)=>{
                 this.paises = res.data
             }).catch((err)=>{
@@ -229,7 +229,7 @@
 
             },
             cadastrar(data){
-               axios.post("http://127.0.0.1:5000/cadastrar",data)
+               axios.post(`${process.env.VUE_APP_SERVER_URI}/cadastrar`,data)
                 .then((res) => {
                     console.log(res)
                     this.$router.push('/')
@@ -246,7 +246,7 @@
                     headers: {
                         'Authorization': `Bearer ${this.$store.state}` 
                     }}
-               axios.put(`http://127.0.0.1:5000//usuario/${this.$store.state.id}`,data,headers)
+               axios.put(`${process.env.VUE_APP_SERVER_URI}/usuario/${this.$store.state.id}`,data,headers)
                 .then((res) => {
                     this.$store.commit("dados", res.data.usuarios)
                     this.$router.push('/')

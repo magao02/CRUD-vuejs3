@@ -11,7 +11,7 @@ export default {
             headers: {
                 'Authorization': `Bearer ${this.$store.state.token}` 
             }}
-            axios.delete(`http://127.0.0.1:5000//usuario/${this.$store.state.id}`,headers)
+            axios.delete(`${process.env.VUE_APP_SERVER_URI}/usuario/${this.$store.state.id}`,headers)
             .then(() => {
                     this.$store.commit("logout")
                     this.$router.push('/')

@@ -27,7 +27,7 @@ export default {
     login(e){
 
         e.preventDefault();
-        axios.post("http://127.0.0.1:5000/login",{
+        axios.post(`${process.env.VUE_APP_SERVER_URI}/login`,{
             identificador: this.identificador,
             senha: this.senha
             }).then((res)=>{
@@ -43,7 +43,7 @@ export default {
 
     },
     alteraState(e,token,id){
-       axios.get(`http://127.0.0.1:5000/usuario/${id}`,{
+       axios.get(`${process.env.VUE_APP_SERVER_URI}/usuario/${id}`,{
            headers:{
                'Authorization': `Bearer ${token}`
            }
