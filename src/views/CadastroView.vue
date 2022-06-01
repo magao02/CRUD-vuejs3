@@ -1,7 +1,7 @@
 <template>
    <div>
      <h1>Cadastre-se</h1>
-     <cadastro-form></cadastro-form>
+     <cadastro-form requisicao="post"></cadastro-form>
      
    </div>
 </template>
@@ -19,11 +19,6 @@
             }
         },
         methods:{
-            finalizarTarefa(tempoDecorrido)  {
-                console.log(tempoDecorrido);
-                console.log(this.descricao);
-                this.descricao = '';
-            }
         }
         
     };

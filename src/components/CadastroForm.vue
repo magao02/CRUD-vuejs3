@@ -9,7 +9,7 @@
         <form id="cadastro-form" @submit="checkForm">
             <div class="input-container">
                 <label for="nome">Nome</label>
-                <input type="text" id="nome" name="nome" v-model="nome" placeholder="Nome completo" />
+                <input type="text" id="nome" name="nome" v-model="nome" placeholder="Nome completo"/>
             </div>
             <div class="input-container">
                 <label for="email">Email</label>
@@ -87,24 +87,23 @@
 
 <script>
     import axios from "axios";
-    import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
     export default {
         name: "CadastroForm",
         data() {
             return {
-            nome: this.$store.nome,
-            email: this.$store.email,
-            senha: this.$store.senha,
-            cpf: this.$store.cpf,
-            pis: this.$store.pis,
-            estado: this.$store.estado,
-            rua: this.$store.rua,
-            cep: this.$store.cep,
-            numero: this.$store.numero,
-            complemento:this.$store.complemento,
-            bairro: this.$store.complemento,
-            municipio:this.$store.municipio,
-            pais: this.$store.pais,
+            nome: "",
+            email: "",
+            senha: "",
+            cpf: "",
+            pis: "",
+            estado: "",
+            rua:"" ,
+            cep: "",
+            numero: "",
+            complemento:"",
+            bairro: "",
+            municipio:"",
+            pais: "",
             estados:[],
             errors: [],
             paises: [],
@@ -119,6 +118,7 @@
                     
             })
         },
+        props:['requisicao'],
 
         methods:{
             
@@ -136,8 +136,9 @@
                 }
             },
             checkForm(e){
+                e.preventDefault();
                 this.errors = [];
-                
+
                 if (!this.nome) {
                     this.errors.push('O nome é obrigatório.');
                 }
@@ -173,19 +174,31 @@
                 if (!this.cep) {
                     this.errors.push('O CEP é obrigatório.');
                 }
+                if (this.cep.length !== 8 ) {
+                    this.errors.push('O CEP é deve ter 11 digitos.');
+                }
                 if (!this.cpf) {
                     this.errors.push('O CPF é obrigatório.');
                 }
+                if (this.cpf.length !== 11 ) {
+                    this.errors.push('O CPF é deve ter 11 digitos.');
+                }
                 if (!this.pis) {
                     this.errors.push('O PIS é obrigatório.');
+                }
+                if (this.pis.length !== 11 ) {
+                    this.errors.push('O PIS é deve ter 11 digitos.');
                 }
                 if(this.errors.length){
                     e.preventDefault();
                     console.log(this.errors)
 
                 }
-                this.cadastroUsuario()
-
+                if(!this.errors.length){
+                    this.cadastroUsuario()
+                    e.preventDefault();
+                }
+                e.preventDefault();
                 
             },
             cadastroUsuario(){
@@ -205,17 +218,38 @@
                     pais: this.pais,
 
                 }
-                console.log(data);
+                if(this.requisicao === 'post'){
+                    this.cadastrar(data)
+                }
+                if(this.requisicao === 'put'){
+                    this.editar(data)
+                }
+                
 
 
             },
-            cadastrar(){
-                const auth = getAuth();
-                createUserWithEmailAndPassword(auth, this.email, this.senha)
-                .then((userCredential) => {
-                    // Signed in
-                    console.log("aqui")
-                    console.log(userCredential)
+            cadastrar(data){
+               axios.post("http://127.0.0.1:5000/cadastrar",data)
+                .then((res) => {
+                    console.log(res)
+                    this.$router.push('/')
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    console.log(errorCode, errorMessage)
+                    // ..
+                });
+            },
+            editar(data){
+               const headers ={
+                    headers: {
+                        'Authorization': `Bearer ${this.$store.state}` 
+                    }}
+               axios.put(`http://127.0.0.1:5000//usuario/${this.$store.state.id}`,data,headers)
+                .then((res) => {
+                    this.$store.commit("dados", res.data.usuarios)
+                    this.$router.push('/')
 
                     // ...
                 })
@@ -225,7 +259,9 @@
                     console.log(errorCode, errorMessage)
                     // ..
                 });
-            }
+            
+            
+}
 
 
             

@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { getAuth,signOut} from "firebase/auth";
+
 import LoginForm from "@/components/LoginForm.vue";
 export default {
   
@@ -19,11 +19,7 @@ export default {
   },
   methods:{
       logout(){
-          let auth;
-          auth = getAuth();
-          signOut(auth).then(()=>{
-            this.$store.commit("logout")
-          })
+          this.$store.commit("logout")
       }
   }
 

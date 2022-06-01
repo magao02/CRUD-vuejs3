@@ -2,7 +2,7 @@
     <form id="login-form" @submit="login">
             <div class="input-container">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" v-model="email" placeholder="endereço de email" />
+                <input type="text" id="identificador" name="identificador" v-model="identificador" placeholder="email, CPF ou PIS" />
             </div>
             <div class="input-container">
                 <label for="senha">senha</label>
@@ -15,23 +15,23 @@
 </template>
 <script>
 import axios from "axios";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 export default {
     name: "LoginForm",
     data(){
         return{
-            email: "",
+            identificador: "",
             senha: ""
         }
     },
     methods:{
     login(e){
+
         e.preventDefault();
-        const auth = getAuth();
-        signInWithEmailAndPassword(auth,this.email,this.senha).then((data)=>{
-            console.log(data);
-            console.log("logado")
-            this.alteraState(e)
+        axios.post("http://127.0.0.1:5000/login",{
+            identificador: this.identificador,
+            senha: this.senha
+            }).then((res)=>{
+            this.alteraState(e, res.data.access_token,res.data.id)
 
         }).catch((error) => {
                     const errorCode = error.code;
@@ -42,12 +42,14 @@ export default {
                 });
 
     },
-    alteraState(e){
-       axios.get("http://127.0.0.1:5555/requisicao.json").then((res)=>{
-            console.log(res.data)
-            this.$store.commit("dados", res.data)
-
-            console.log(this.$store.state.logged)
+    alteraState(e,token,id){
+       axios.get(`http://127.0.0.1:5000/usuario/${id}`,{
+           headers:{
+               'Authorization': `Bearer ${token}`
+           }
+       }).then((res)=>{
+            this.$store.commit("token",token)
+            this.$store.commit("dados", res.data.usuarios)
           })
           e.preventDefault();
           
